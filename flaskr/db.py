@@ -3,6 +3,7 @@ import sqlite3
 import click
 from flask import current_app
 from flask import g
+from werkzeug.security import generate_password_hash
 
 
 def get_db():
@@ -37,12 +38,25 @@ def init_db():
         db.executescript(f.read().decode("utf8"))
 
 
+def create_dev(user, pwd):
+    # for dev only
+    db = get_db()
+
+    db.execute(
+        "INSERT INTO user (username, password) VALUES (?, ?)",
+        (user, generate_password_hash(pwd)),
+    )
+    db.commit()
+
+    click.echo("user[%s] created with pwd[%s]." % (user, pwd))
+
+
 @click.command("init-db")
 def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
     click.echo("Initialized the database.")
-
+    create_dev("dev", "dev")
 
 def init_app(app):
     """Register database functions with the Flask app. This is called by
