@@ -53,19 +53,3 @@ $ flask --app flaskr run --debug
 ```
 
 Open http://127.0.0.1:5000 in a browser.
-
-
-## Test
-
-```bash
-$ pip install '.[test]'
-$ pytest
-```
-
-Run with coverage report:
-
-```bash
-$ coverage run -m pytest
-$ coverage report
-$ coverage html  # open htmlcov/index.html in a browser
-```

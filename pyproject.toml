@@ -11,29 +11,3 @@ dependencies = [
 
 [project.urls]
 Documentation = "https://flask.palletsprojects.com/tutorial/"
-
-[project.optional-dependencies]
-test = ["pytest"]
-
-[build-system]
-requires = ["flit_core<4"]
-build-backend = "flit_core.buildapi"
-
-[tool.flit.module]
-name = "flaskr"
-
-[tool.flit.sdist]
-include = [
-    "tests/",
-]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-filterwarnings = ["error"]
-
-[tool.coverage.run]
-branch = true
-source = ["flaskr", "tests"]
-
-[tool.ruff]
-src = ["src"]
