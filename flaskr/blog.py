@@ -14,6 +14,7 @@ bp = Blueprint("blog", __name__)
 
 
 @bp.route("/")
+@login_required
 def index():
     """Show all the posts, most recent first."""
     db = get_db()
