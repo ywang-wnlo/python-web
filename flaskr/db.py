@@ -4,6 +4,7 @@ import click
 from flask import current_app
 from flask import g
 from werkzeug.security import generate_password_hash
+from getpass import getpass
 
 
 def get_db():
@@ -48,7 +49,7 @@ def create_dev(user, pwd):
     )
     db.commit()
 
-    click.echo("user[%s] created with pwd[%s]." % (user, pwd))
+    click.echo("[%s]创建成功，密码[%s]." % (user, pwd))
 
 
 @click.command("init-db")
@@ -56,7 +57,9 @@ def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
     click.echo("Initialized the database.")
-    create_dev("dev", "dev")
+    _user = input("管理员账户: ")
+    _pwd = getpass("管理员密码: ")
+    create_dev(_user, _pwd)
 
 def init_app(app):
     """Register database functions with the Flask app. This is called by
