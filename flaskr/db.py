@@ -56,9 +56,9 @@ def create_dev(user, pwd):
 def init_db_command():
     """Clear existing data and create new tables."""
     init_db()
-    click.echo("数据库初始化完成，开始创建管理员账户")
-    _user = input("管理员账户: ")
-    _pwd = getpass("管理员密码: ")
+    click.echo("数据库初始化完成，开始创建账户")
+    _user = input("用户名: ")
+    _pwd = getpass("密码: ")
     create_dev(_user, _pwd)
 
 def init_app(app):
