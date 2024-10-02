@@ -72,7 +72,7 @@ def create():
             error = "必须输入链接"
         elif not valid_url(url):
             error = "链接格式不正确，必须包含 http(s)://"
-        elif not url:
+        elif not title:
             error = "必须输入标题"
 
         if error is not None:
@@ -104,7 +104,7 @@ def update(id):
             error = "必须输入链接"
         elif not valid_url(url):
             error = "链接格式不正确，必须包含 http(s)://"
-        elif not url:
+        elif not title:
             error = "必须输入标题"
 
         if error is not None:
