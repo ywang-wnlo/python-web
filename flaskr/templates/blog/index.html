@@ -10,7 +10,7 @@
     <article class="post">
       <header>
         <div>
-          <p>{{ post['title'] }} - {{ post['body'] }}</p>
+          <p>{{ post['title'] }}: <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a></p>
         </div>
         {% if g.user['id'] == post['author_id'] %}
           <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">修改</a>
