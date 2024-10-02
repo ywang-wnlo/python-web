@@ -7,9 +7,11 @@
 {% block content %}
   <form method="post">
     <label for="url">链接</label>
-    <input name="url" id="url">{{ request.form['url'] }}</input>
+    <input name="url" id="url" value="{{ request.form['url'] }}" required>
     <label for="title">标题</label>
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
+    <label for="port">端口</label>
+    <input name="port" id="port" value="{{ request.form['port'] }}">
     <input type="submit" value="保存">
   </form>
 {% endblock %}

@@ -15,5 +15,6 @@ CREATE TABLE post (
   author_id INTEGER NOT NULL,
   title TEXT NOT NULL,
   url TEXT NOT NULL,
+  port INTEGER,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );

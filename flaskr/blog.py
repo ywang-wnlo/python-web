@@ -19,8 +19,8 @@ def index():
     """Show all the posts, most recent first."""
     db = get_db()
     posts = db.execute(
-        "SELECT id, title, url, author_id"
-        " FROM post ORDER BY title ASC"
+        "SELECT id, title, url, port, author_id"
+        " FROM post ORDER BY url ASC"
     ).fetchall()
     return render_template("blog/index.html", posts=posts)
 
@@ -40,7 +40,7 @@ def get_post(id, check_author=True):
     post = (
         get_db()
         .execute(
-            "SELECT id, title, url, author_id"
+            "SELECT id, title, url, port, author_id"
             " FROM post WHERE id = ?",
             (id,),
         )
@@ -66,6 +66,7 @@ def create():
     if request.method == "POST":
         title = request.form["title"]
         url = request.form["url"]
+        port = request.form["port"]
         error = None
 
         if not url:
@@ -80,8 +81,8 @@ def create():
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO post (title, url, author_id) VALUES (?, ?, ?)",
-                (title, url, g.user["id"]),
+                "INSERT INTO post (title, url, port, author_id) VALUES (?, ?, ?, ?)",
+                (title, url, port, g.user["id"]),
             )
             db.commit()
             return redirect(url_for("blog.index"))
@@ -98,6 +99,7 @@ def update(id):
     if request.method == "POST":
         title = request.form["title"]
         url = request.form["url"]
+        port = request.form["port"]
         error = None
 
         if not url:
@@ -112,7 +114,8 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE post SET title = ?, url = ? WHERE id = ?", (title, url, id)
+                "UPDATE post SET title = ?, url = ? , port = ? WHERE id = ?",
+                (title, url, port, id)
             )
             db.commit()
             return redirect(url_for("blog.index"))
