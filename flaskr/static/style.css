@@ -5,9 +5,7 @@ html {
 }
 
 body {
-  max-width: 960px;
   margin: 0 auto;
-  background: white;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -61,12 +59,11 @@ nav ul li a, nav ul li span, header .action {
 .content > header {
   border-bottom: 1px solid lightgray;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .content > header h1 {
   flex: auto;
-  margin: 1rem 0 0.25rem 0;
 }
 
 .flash {
@@ -78,7 +75,7 @@ nav ul li a, nav ul li span, header .action {
 
 .post > header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   font-size: 0.85em;
 }
 
@@ -86,18 +83,14 @@ nav ul li a, nav ul li span, header .action {
   flex: auto;
 }
 
-.post > header h1 {
-  font-size: 1.5em;
+.post > header a, p {
+  font-size: 1rem;
   margin-bottom: 0;
 }
 
 .post .about {
   color: slategray;
   font-style: italic;
-}
-
-.post .body {
-  white-space: pre-line;
 }
 
 .content:last-child {
