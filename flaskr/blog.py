@@ -1,4 +1,5 @@
 import os
+import time
 
 from flask import Blueprint
 from flask import flash
@@ -14,12 +15,42 @@ from .db import get_db
 
 bp = Blueprint("blog", __name__)
 
-def get_ip():
+
+def set_value_to_gmap(k, v):
+    # set value to sqlite
+    db = get_db()
+    db.execute(
+        "REPLACE INTO gmap (k, v) VALUES (?, ?)",
+        (k, v),
+    )
+    db.commit()
+
+def get_value_from_gmap(k) -> str:
+    # get value from sqlite
+    db = get_db()
+    ret = db.execute(
+        "SELECT v FROM gmap WHERE k = ?",
+        (k,)
+    ).fetchone()
+    return ret["v"] if ret else None
+
+def get_ip() -> str:
+    # try get ip from sqlite
+    ip = get_value_from_gmap("ip")
+    last = float(get_value_from_gmap("last"))
+    now = time.time()
+    # use the cached ip if it's not expired
+    if ip and last and (now - last < 60):
+        return ip
+
     ret = os.popen("curl ifconfig.me/ip").read()
     if ret:
-        g.ip = ret
+        # update the record in sqlite
+        set_value_to_gmap("ip", ret)
+        set_value_to_gmap("last", now)
+        return ret
     else:
-        g.ip = None
+        return None
 
 @bp.route("/")
 @login_required
@@ -30,7 +61,7 @@ def index():
         "SELECT id, title, url, port, author_id"
         " FROM post ORDER BY url ASC"
     ).fetchall()
-    get_ip()
+    g.ip = get_ip()
     return render_template("blog/index.html", posts=posts)
 
 
