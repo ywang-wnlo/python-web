@@ -55,6 +55,9 @@ def get_post(id, check_author=True):
 
     return post
 
+def valid_url(url) -> bool:
+    """Check if the url is valid."""
+    return url.startswith("http://") or url.startswith("https://")
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
@@ -65,10 +68,12 @@ def create():
         url = request.form["url"]
         error = None
 
-        if not title:
-            error = "Title is required."
-
-        # TODO: check url is valid
+        if not url:
+            error = "必须输入链接"
+        elif not valid_url(url):
+            error = "链接格式不正确，必须包含 http(s)://"
+        elif not url:
+            error = "必须输入标题"
 
         if error is not None:
             flash(error)
@@ -95,10 +100,12 @@ def update(id):
         url = request.form["url"]
         error = None
 
-        if not title:
-            error = "Title is required."
-
-        # TODO: check url is valid
+        if not url:
+            error = "必须输入链接"
+        elif not valid_url(url):
+            error = "链接格式不正确，必须包含 http(s)://"
+        elif not url:
+            error = "必须输入标题"
 
         if error is not None:
             flash(error)
