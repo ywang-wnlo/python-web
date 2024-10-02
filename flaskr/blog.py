@@ -37,7 +37,9 @@ def get_value_from_gmap(k) -> str:
 def get_ip() -> str:
     # try get ip from sqlite
     ip = get_value_from_gmap("ip")
-    last = float(get_value_from_gmap("last"))
+    last = get_value_from_gmap("last")
+    if last:
+        last = float(last)
     now = time.time()
     # use the cached ip if it's not expired
     if ip and last and (now - last < 60):
