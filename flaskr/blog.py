@@ -19,9 +19,8 @@ def index():
     """Show all the posts, most recent first."""
     db = get_db()
     posts = db.execute(
-        "SELECT p.id, title, body, created, author_id, username"
-        " FROM post p JOIN user u ON p.author_id = u.id"
-        " ORDER BY created DESC"
+        "SELECT id, title, body, author_id"
+        " FROM post ORDER BY title ASC"
     ).fetchall()
     return render_template("blog/index.html", posts=posts)
 
@@ -41,9 +40,8 @@ def get_post(id, check_author=True):
     post = (
         get_db()
         .execute(
-            "SELECT p.id, title, body, created, author_id, username"
-            " FROM post p JOIN user u ON p.author_id = u.id"
-            " WHERE p.id = ?",
+            "SELECT id, title, body, author_id"
+            " FROM post WHERE id = ?",
             (id,),
         )
         .fetchone()
