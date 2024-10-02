@@ -10,7 +10,14 @@
     <article class="post">
       <header>
         <div>
-          <p>{{ post['title'] }}: <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a></p>
+          <p>{{ post['title'] }}:
+            <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a>
+            {% if g.ip and post['port'] %}
+              <br>
+              <span>IP 直连:</span>
+              <a href="http://{{ g.ip }}:{{ post['port']}}" target="_blank" rel="noreferrer">http://{{ g.ip }}:{{ post['port']}}</a>
+            {% endif %}
+          </p>
         </div>
         {% if g.user['id'] == post['author_id'] %}
           <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">修改</a>

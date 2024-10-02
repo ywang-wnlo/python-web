@@ -1,3 +1,5 @@
+import os
+
 from flask import Blueprint
 from flask import flash
 from flask import g
@@ -12,6 +14,12 @@ from .db import get_db
 
 bp = Blueprint("blog", __name__)
 
+def get_ip():
+    ret = os.popen("curl ifconfig.me/ip").read()
+    if ret:
+        g.ip = ret
+    else:
+        g.ip = None
 
 @bp.route("/")
 @login_required
@@ -22,6 +30,7 @@ def index():
         "SELECT id, title, url, port, author_id"
         " FROM post ORDER BY url ASC"
     ).fetchall()
+    get_ip()
     return render_template("blog/index.html", posts=posts)
 
 
