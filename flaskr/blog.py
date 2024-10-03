@@ -34,25 +34,30 @@ def get_value_from_gmap(k) -> str:
     ).fetchone()
     return ret["v"] if ret else None
 
-def get_ip() -> str:
+def get_ip() -> tuple:
     # try get ip from sqlite
     wan_ip = get_value_from_gmap("wan_ip")
+    # local_ip = get_value_from_gmap("local_ip")
+    local_ip = "192.168.1.2"
     last = get_value_from_gmap("last")
     if last:
         last = float(last)
     now = time.time()
     # use the cached ip if it's not expired
-    if wan_ip and last and (now - last < 60):
-        return wan_ip
+    if wan_ip and local_ip and last and (now - last < 60):
+        return (wan_ip, local_ip)
 
-    ret = os.popen("curl ifconfig.me/ip").read()
-    if ret:
+    wan_ip = os.popen("curl ifconfig.me/ip").read().strip()
+    # local_ip = os.popen("hostname -I").read().strip()
+    local_ip = "192.168.1.2"
+    if wan_ip and local_ip:
         # update the record in sqlite
-        set_value_to_gmap("wan_ip", ret)
+        set_value_to_gmap("wan_ip", wan_ip)
+        # set_value_to_gmap("local_ip", local_ip)
         set_value_to_gmap("last", now)
-        return ret
+        return (wan_ip, local_ip)
     else:
-        return None
+        return (None, None)
 
 @bp.route("/")
 @login_required
@@ -63,7 +68,7 @@ def index():
         "SELECT id, title, url, port, author_id"
         " FROM post ORDER BY url ASC"
     ).fetchall()
-    g.wan_ip = get_ip()
+    g.wan_ip, g.local_ip = get_ip()
     return render_template("blog/index.html", posts=posts)
 
 
