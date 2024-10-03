@@ -13,9 +13,9 @@
           <p>{{ post['title'] }}:
             <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a>
           </p>
-        {% if g.ip and post['port'] %}
+        {% if g.wan_ip and post['port'] %}
           <p>IP 直连:
-            <a href="http://{{ g.ip }}:{{ post['port']}}" target="_blank" rel="noreferrer">http://{{ g.ip }}:{{ post['port']}}</a>
+            <a href="http://{{ g.wan_ip }}:{{ post['port']}}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{ post['port']}}</a>
           </p>
         {% endif %}
         </div>

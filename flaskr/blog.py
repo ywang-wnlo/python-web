@@ -36,19 +36,19 @@ def get_value_from_gmap(k) -> str:
 
 def get_ip() -> str:
     # try get ip from sqlite
-    ip = get_value_from_gmap("ip")
+    wan_ip = get_value_from_gmap("wan_ip")
     last = get_value_from_gmap("last")
     if last:
         last = float(last)
     now = time.time()
     # use the cached ip if it's not expired
-    if ip and last and (now - last < 60):
-        return ip
+    if wan_ip and last and (now - last < 60):
+        return wan_ip
 
     ret = os.popen("curl ifconfig.me/ip").read()
     if ret:
         # update the record in sqlite
-        set_value_to_gmap("ip", ret)
+        set_value_to_gmap("wan_ip", ret)
         set_value_to_gmap("last", now)
         return ret
     else:
@@ -63,7 +63,7 @@ def index():
         "SELECT id, title, url, port, author_id"
         " FROM post ORDER BY url ASC"
     ).fetchall()
-    g.ip = get_ip()
+    g.wan_ip = get_ip()
     return render_template("blog/index.html", posts=posts)
 
 
