@@ -47,7 +47,7 @@ def get_ip() -> tuple:
     if wan_ip and local_ip and last and (now - last < 60):
         return (wan_ip, local_ip)
 
-    wan_ip = os.popen("curl ifconfig.me/ip").read().strip()
+    wan_ip = os.popen("curl -s 4.ipw.cn").read().strip()
     # local_ip = os.popen("hostname -I").read().strip()
     local_ip = "192.168.1.2"
     if wan_ip and local_ip:
