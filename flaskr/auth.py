@@ -1,4 +1,5 @@
 import functools
+import time
 
 from flask import Blueprint
 from flask import flash
@@ -14,6 +15,9 @@ from .db import get_db
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
+
+def now():
+    return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
 def login_required(view):
     """View decorator that redirects anonymous users to the login page."""
@@ -63,9 +67,11 @@ def login():
             # store the user id in a new session and return to the index
             session.clear()
             session["user_id"] = user["id"]
+            print("%s - %s login success with user[%s]" % (now(), request.remote_addr, username))
             return redirect(url_for("index"))
 
         flash(error)
+        print("%s - %s try to login failed, with user[%s] password[%s]" % (now(), request.remote_addr, username, password))
 
     return render_template("auth/login.html")
 
@@ -74,4 +80,5 @@ def login():
 def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
+    print("%s - %s logout with user[%s]" % (now(), request.remote_addr, g.user["username"]))
     return redirect(url_for("index"))
