@@ -44,7 +44,7 @@ docker build -t python-web .
 Initialize the database:
 
 ```bash
-docker run -p [port]:8080 -it --name python-web python-web
+docker run -p [port]:8080 -it --restart unless-stopped --name python-web python-web
 ```
 
 After db initialization, ctrl+c to stop the container
