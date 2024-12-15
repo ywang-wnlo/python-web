@@ -24,7 +24,7 @@ Install Flaskr:
 pip install flask
 ```
 
-## Run
+## Run in debug
 
 ```bash
 flask --app flaskr init-db
@@ -32,3 +32,25 @@ flask --app flaskr run --debug
 ```
 
 Open http://127.0.0.1:5000 in a browser.
+
+## Production environment (Docker)
+
+Build the image:
+
+```bash
+docker build -t python-web .
+```
+
+Initialize the database:
+
+```bash
+docker run -p [port]:8080 -it --name python-web python-web
+```
+
+After db initialization, ctrl+c to stop the container
+
+Normally, you can run the container with:
+
+```bash
+docker start python-web
+```
