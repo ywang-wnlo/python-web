@@ -45,7 +45,7 @@ def create_dev(user, pwd):
 
     db.execute(
         "INSERT INTO user (username, password) VALUES (?, ?)",
-        (user, generate_password_hash(pwd)),
+        (user, generate_password_hash(pwd, method="pbkdf2")),
     )
     db.commit()
 
