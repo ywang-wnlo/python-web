@@ -34,30 +34,25 @@ def get_value_from_gmap(k) -> str:
     ).fetchone()
     return ret["v"] if ret else None
 
-def get_ip() -> tuple:
+def get_wan_ip() -> str:
     # try get ip from sqlite
     wan_ip = get_value_from_gmap("wan_ip")
-    # local_ip = get_value_from_gmap("local_ip")
-    local_ip = "192.168.1.2"
     last = get_value_from_gmap("last")
     if last:
         last = float(last)
     now = time.time()
     # use the cached ip if it's not expired
-    if wan_ip and local_ip and last and (now - last < 60):
-        return (wan_ip, local_ip)
+    if wan_ip and last and (now - last < 60):
+        return wan_ip
 
     wan_ip = os.popen("curl -s 4.ipw.cn").read().strip()
-    # local_ip = os.popen("hostname -I").read().strip()
-    local_ip = "192.168.1.2"
-    if wan_ip and local_ip:
+    if wan_ip:
         # update the record in sqlite
         set_value_to_gmap("wan_ip", wan_ip)
-        # set_value_to_gmap("local_ip", local_ip)
         set_value_to_gmap("last", now)
-        return (wan_ip, local_ip)
+        return wan_ip
     else:
-        return (None, None)
+        return None
 
 @bp.route("/")
 @login_required
@@ -65,10 +60,10 @@ def index():
     """Show all the posts, most recent first."""
     db = get_db()
     posts = db.execute(
-        "SELECT id, title, url, port, author_id"
+        "SELECT id, title, url, port, local_ip, author_id"
         " FROM post ORDER BY url ASC"
     ).fetchall()
-    g.wan_ip, g.local_ip = get_ip()
+    g.wan_ip = get_wan_ip()
     return render_template("blog/index.html", posts=posts)
 
 
@@ -87,7 +82,7 @@ def get_post(id, check_author=True):
     post = (
         get_db()
         .execute(
-            "SELECT id, title, url, port, author_id"
+            "SELECT id, title, url, port, local_ip, author_id"
             " FROM post WHERE id = ?",
             (id,),
         )
@@ -114,6 +109,7 @@ def create():
         title = request.form["title"]
         url = request.form["url"]
         port = request.form["port"]
+        local_ip = request.form["local_ip"]
         error = None
 
         if not url:
@@ -128,8 +124,8 @@ def create():
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO post (title, url, port, author_id) VALUES (?, ?, ?, ?)",
-                (title, url, port, g.user["id"]),
+                "INSERT INTO post (title, url, port, local_ip, author_id) VALUES (?, ?, ?, ?, ?)",
+                (title, url, port, local_ip, g.user["id"]),
             )
             db.commit()
             return redirect(url_for("blog.index"))
@@ -147,6 +143,7 @@ def update(id):
         title = request.form["title"]
         url = request.form["url"]
         port = request.form["port"]
+        local_ip = request.form["local_ip"]
         error = None
 
         if not url:
@@ -161,8 +158,8 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE post SET title = ?, url = ? , port = ? WHERE id = ?",
-                (title, url, port, id)
+                "UPDATE post SET title = ?, url = ? , port = ?, local_ip = ? WHERE id = ?",
+                (title, url, port, local_ip, id)
             )
             db.commit()
             return redirect(url_for("blog.index"))

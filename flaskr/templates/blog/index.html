@@ -15,12 +15,12 @@
           </p>
         {% if g.wan_ip and post['port'] %}
           <p>IP 直连:
-            <a href="http://{{ g.wan_ip }}:{{ post['port']}}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{ post['port']}}</a>
+            <a href="http://{{ g.wan_ip }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{ post['port'] }}</a>
           </p>
         {% endif %}
-        {% if g.local_ip and post['port'] %}
+        {% if post['local_ip'] and post['port'] %}
           <p>内网直连:
-            <a href="http://{{ g.local_ip }}:{{ post['port']}}" target="_blank" rel="noreferrer">http://{{ g.local_ip }}:{{ post['port']}}</a>
+            <a href="http://{{ post['local_ip'] }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ post['local_ip'] }}:{{ post['port'] }}</a>
           </p>
         {% endif %}
         </div>

@@ -12,6 +12,8 @@
     <input name="title" id="title" value="{{ request.form['title'] }}" required>
     <label for="port">端口</label>
     <input name="port" id="port" value="{{ request.form['port'] }}">
+    <label for="local_ip">内网 ip</label>
+    <input name="local_ip" id="local_ip" value="{{ request.form['local_ip'] }}">
     <input type="submit" value="保存">
   </form>
 {% endblock %}
