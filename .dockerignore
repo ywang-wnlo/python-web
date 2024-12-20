@@ -1,0 +1,20 @@
+# py
+.venv
+
+# cache
+__pycache__
+
+# db
+instance
+
+# docker
+.dockerignore
+Dockerfile
+
+# git
+.git
+.gitignore
+
+# README
+pyproject.toml
+README.md
