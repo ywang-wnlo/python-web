@@ -1,15 +1,64 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block header %}
-  <h1>{% block title %}登录{% endblock %}</h1>
-{% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登录</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
 
-{% block content %}
-  <form method="post">
-    <label for="username">账号</label>
-    <input name="username" id="username" required>
-    <label for="password">密码</label>
-    <input type="password" name="password" id="password" required>
-    <input type="submit" value="登录">
-  </form>
-{% endblock %}
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='favicon.ico') }}">
+        </a>
+      </div>
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{ url_for('index') }}">导航</a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <div>
+            {% if g.user %}
+            <span>{{ g.user['username'] }}</span>
+            <a class="button is-danger" href="{{ url_for('auth.logout') }}">退出</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">登录</h1>
+      <div>
+        <form class="box" method="post">
+          <div class="field">
+            <label class="label">账号</label>
+            <input class="input" type="text" name="username" id="username" required />
+          </div>
+          <div class="field">
+            <label class="label">密码</label>
+            <input class="input" type="password" name="password" id="password" required />
+          </div>
+          {% for message in get_flashed_messages() %}
+          <div class="notification is-danger">
+            {{ message }}
+          </div>
+          {% endfor %}
+          <div class="field is-grouped is-grouped-right">
+            <p class="control">
+              <button class="button is-primary" type="submit">登录</button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

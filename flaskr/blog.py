@@ -107,6 +107,7 @@ def create():
     """Create a new post for the current user."""
     if request.method == "POST":
         title = request.form["title"]
+        protocol = request.form["protocol"]
         url = request.form["url"]
         port = request.form["port"]
         local_ip = request.form["local_ip"]
@@ -114,8 +115,6 @@ def create():
 
         if not url:
             error = "必须输入链接"
-        elif not valid_url(url):
-            error = "链接格式不正确，必须包含 http(s)://"
         elif not title:
             error = "必须输入标题"
 
@@ -125,7 +124,7 @@ def create():
             db = get_db()
             db.execute(
                 "INSERT INTO post (title, url, port, local_ip, author_id) VALUES (?, ?, ?, ?, ?)",
-                (title, url, port, local_ip, g.user["id"]),
+                (title, protocol + url, port, local_ip, g.user["id"]),
             )
             db.commit()
             return redirect(url_for("blog.index"))

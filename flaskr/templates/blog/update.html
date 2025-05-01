@@ -1,23 +1,75 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block header %}
-  <h1>{% block title %}修改 "{{ post['title'] }}"{% endblock %}</h1>
-{% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>修改</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
 
-{% block content %}
-  <form method="post">
-    <label for="url">链接</label>
-    <input name="url" id="url" value="{{ request.form['url'] or post['url'] }}" required>
-    <label for="title">标题</label>
-    <input name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
-    <label for="port">端口</label>
-    <input name="port" id="port" value="{{ request.form['port'] or post['port'] }}">
-    <label for="local_ip">内网 ip</label>
-    <input name="local_ip" id="local_ip" value="{{ request.form['local_ip'] or post['local_ip'] }}">
-    <input type="submit" value="保存">
-  </form>
-  <hr>
-  <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
-    <input class="danger" type="submit" value="删除" onclick="return confirm('确认删除?');">
-  </form>
-{% endblock %}
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='favicon.ico') }}">
+        </a>
+      </div>
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{ url_for('index') }}">导航</a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          {% if g.user %}
+          <span>{{ g.user['url'] }}</span>
+          <a class="button is-danger" href="{{ url_for('auth.logout') }}">退出</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <div class="is-clearfix">
+        <h1 class="title" style="float: left;">修改 "{{ post['title'] }}"</h1>
+        <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post" style="float: right;">
+          <input class="button is-danger" type="submit" value="删除" onclick="return confirm('确认删除?');">
+        </form>
+      </div>
+      <div>
+        <form class="box" method="post">
+          <div class="field">
+            <label class="label">标题</label>
+            <input class="input" type="text" name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
+          </div>
+          <div class="field">
+            <label class="label">链接</label>
+            <input class="input" type="text" name="url" id="url" value="{{ request.form['url'] or post['url'] }}" required />
+          </div>
+          <div class="field">
+            <label class="label">端口</label>
+            <input class="input" type="text" name="port" id="port" value="{{ request.form['port'] or post['port'] }}">
+          </div>
+          <div class="field">
+            <label class="label">内网 ip</label>
+            <input class="input" type="text" name="local_ip" id="local_ip" value="{{ request.form['local_ip'] or post['local_ip'] }}">
+          </div>
+          {% for message in get_flashed_messages() %}
+          <div class="notification is-danger">
+            {{ message }}
+          </div>
+          {% endfor %}
+          <div class="field is-grouped is-grouped-right">
+            <p class="control">
+              <button class="button is-primary" type="submit">保存</button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>

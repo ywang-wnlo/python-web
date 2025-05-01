@@ -1,36 +1,77 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block header %}
-  <h1>{% block title %}链接{% endblock %}</h1>
-  <a class="action" href="{{ url_for('blog.create') }}">添加</a>
-{% endblock %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>导航</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <style>
+    .message-body p {
+      margin: 1rem;
+    }
+  </style>
+</head>
 
-{% block content %}
-  {% for post in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <p>{{ post['title'] }}:
-            <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a>
-          </p>
-        {% if g.wan_ip and post['port'] %}
-          <p>IP 直连:
-            <a href="http://{{ g.wan_ip }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{ post['port'] }}</a>
-          </p>
-        {% endif %}
-        {% if post['local_ip'] and post['port'] %}
-          <p>内网直连:
-            <a href="http://{{ post['local_ip'] }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ post['local_ip'] }}:{{ post['port'] }}</a>
-          </p>
-        {% endif %}
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{{ url_for('index') }}">
+          <img src="{{ url_for('static', filename='favicon.ico') }}">
+        </a>
+      </div>
+      <div class="navbar-start">
+        <a class="navbar-item" href="{{ url_for('index') }}">导航</a>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          {% if g.user %}
+          <span>{{ g.user['username'] }}</span>
+          <a class="button is-danger" href="{{ url_for('auth.logout') }}">退出</a>
+          {% endif %}
         </div>
-        {% if g.user['id'] == post['author_id'] %}
-          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">修改</a>
-        {% endif %}
-      </header>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
-{% endblock %}
+      </div>
+    </div>
+  </nav>
+
+  <section class="section">
+    <div class="container is-max-tablet">
+      <div class="is-clearfix">
+        <h1 class="title" style="float: left;">导航</h1>
+        <a class="button is-primary" href="{{ url_for('blog.create') }}" style="float: right;">添加</a>
+      </div>
+      <div>
+        {% for post in posts %}
+        <article class="message">
+          <div class="message-header">
+            <p>{{ post['title'] }}</p>
+            {% if g.user and g.user['id'] == post['author_id'] %}
+            <a class="button" href="{{ url_for('blog.update', id=post['id']) }}">修改</a>
+            {% endif %}
+          </div>
+          <div class="message-body">
+            <p>域名访问：
+              <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a>
+            </p>
+            {% if g.wan_ip and post['port'] %}
+            <p>IP 直连：
+              <a href="http://{{ g.wan_ip }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{
+                post['port'] }}</a>
+            </p>
+            {% endif %}
+            {% if post['local_ip'] and post['port'] %}
+            <p>内网直连：
+              <a href="http://{{ post['local_ip'] }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{
+                post['local_ip'] }}:{{ post['port'] }}</a>
+            </p>
+            {% endif %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</body>
+
+</html>
