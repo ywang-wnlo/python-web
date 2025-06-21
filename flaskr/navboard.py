@@ -13,7 +13,7 @@ from werkzeug.exceptions import abort
 from .auth import login_required
 from .db import get_db
 
-bp = Blueprint("blog", __name__)
+bp = Blueprint("navboard", __name__)
 
 
 def set_value_to_gmap(k, v):
@@ -57,45 +57,45 @@ def get_wan_ip() -> str:
 @bp.route("/")
 @login_required
 def index():
-    """Show all the posts, most recent first."""
+    """Show all the nav_entrys, most recent first."""
     db = get_db()
-    posts = db.execute(
+    nav_entrys = db.execute(
         "SELECT id, title, url, port, local_ip, author_id"
-        " FROM post ORDER BY url ASC"
+        " FROM nav_entry ORDER BY url ASC"
     ).fetchall()
     g.wan_ip = get_wan_ip()
-    return render_template("blog/index.html", posts=posts)
+    return render_template("navboard/index.html", nav_entrys=nav_entrys)
 
 
-def get_post(id, check_author=True):
-    """Get a post and its author by id.
+def get_nav_entry(id, check_author=True):
+    """Get a nav_entry and its author by id.
 
     Checks that the id exists and optionally that the current user is
     the author.
 
-    :param id: id of post to get
+    :param id: id of nav_entry to get
     :param check_author: require the current user to be the author
-    :return: the post with author information
-    :raise 404: if a post with the given id doesn't exist
+    :return: the nav_entry with author information
+    :raise 404: if a nav_entry with the given id doesn't exist
     :raise 403: if the current user isn't the author
     """
-    post = (
+    nav_entry = (
         get_db()
         .execute(
             "SELECT id, title, url, port, local_ip, author_id"
-            " FROM post WHERE id = ?",
+            " FROM nav_entry WHERE id = ?",
             (id,),
         )
         .fetchone()
     )
 
-    if post is None:
+    if nav_entry is None:
         abort(404, f"Post id {id} doesn't exist.")
 
-    if check_author and post["author_id"] != g.user["id"]:
+    if check_author and nav_entry["author_id"] != g.user["id"]:
         abort(403)
 
-    return post
+    return nav_entry
 
 def valid_url(url) -> bool:
     """Check if the url is valid."""
@@ -104,7 +104,7 @@ def valid_url(url) -> bool:
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
-    """Create a new post for the current user."""
+    """Create a new nav_entry for the current user."""
     if request.method == "POST":
         title = request.form["title"]
         protocol = request.form["protocol"]
@@ -123,20 +123,20 @@ def create():
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO post (title, url, port, local_ip, author_id) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO nav_entry (title, url, port, local_ip, author_id) VALUES (?, ?, ?, ?, ?)",
                 (title, protocol + url, port, local_ip, g.user["id"]),
             )
             db.commit()
-            return redirect(url_for("blog.index"))
+            return redirect(url_for("navboard.index"))
 
-    return render_template("blog/create.html")
+    return render_template("navboard/create.html")
 
 
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
-    """Update a post if the current user is the author."""
-    post = get_post(id)
+    """Update a nav_entry if the current user is the author."""
+    nav_entry = get_nav_entry(id)
 
     if request.method == "POST":
         title = request.form["title"]
@@ -157,25 +157,25 @@ def update(id):
         else:
             db = get_db()
             db.execute(
-                "UPDATE post SET title = ?, url = ? , port = ?, local_ip = ? WHERE id = ?",
+                "UPDATE nav_entry SET title = ?, url = ? , port = ?, local_ip = ? WHERE id = ?",
                 (title, url, port, local_ip, id)
             )
             db.commit()
-            return redirect(url_for("blog.index"))
+            return redirect(url_for("navboard.index"))
 
-    return render_template("blog/update.html", post=post)
+    return render_template("navboard/update.html", nav_entry=nav_entry)
 
 
 @bp.route("/<int:id>/delete", methods=("POST",))
 @login_required
 def delete(id):
-    """Delete a post.
+    """Delete a nav_entry.
 
-    Ensures that the post exists and that the logged in user is the
-    author of the post.
+    Ensures that the nav_entry exists and that the logged in user is the
+    author of the nav_entry.
     """
-    get_post(id)
+    get_nav_entry(id)
     db = get_db()
-    db.execute("DELETE FROM post WHERE id = ?", (id,))
+    db.execute("DELETE FROM nav_entry WHERE id = ?", (id,))
     db.commit()
-    return redirect(url_for("blog.index"))
+    return redirect(url_for("navboard.index"))

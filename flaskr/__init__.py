@@ -29,15 +29,15 @@ def create_app():
 
     # apply the blueprints to the app
     from . import auth
-    from . import blog
+    from . import navboard
 
     app.register_blueprint(auth.bp)
-    app.register_blueprint(blog.bp)
+    app.register_blueprint(navboard.bp)
 
-    # make url_for('index') == url_for('blog.index')
+    # make url_for('index') == url_for('navboard.index')
     # in another app, you might define a separate main index here with
-    # app.route, while giving the blog blueprint a url_prefix, but for
-    # the tutorial the blog will be the main index
+    # app.route, while giving the navboard blueprint a url_prefix, but for
+    # the tutorial the navboard will be the main index
     app.add_url_rule("/", endpoint="index")
 
     return app

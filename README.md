@@ -1,56 +1,47 @@
-# Flaskr
+# NavBoard
 
-The basic blog app built in the Flask [tutorial](https://flask.palletsprojects.com/tutorial/).
+NavBoard 是一个简洁高效的内外网服务导航管理平台。支持用户登录后添加、管理各类服务入口，包括域名访问、外网直连和内网直连等多种方式，适合个人或团队集中管理常用服务和资源。
 
-## Install
+## 功能特性
 
-Create a virtualenv and activate it:
+- 添加、编辑、删除导航条目
+- 支持外网域名、外网 IP、内网 IP 及端口的多种访问方式
+- 简洁美观的 Web 界面，基于 Bulma 框架
 
-```bash
-python3 -m venv .venv
-.venv/bin/activate
-```
+## 快速开始
 
-Or on Windows cmd:
+1. 克隆项目并安装依赖
+2. 初始化数据库
+3. 启动服务
 
-```cmd
-python3 -m venv .venv
-.venv\Scripts\activate.bat
-```
+    ```bash
+    git clone <your-repo-url>
+    cd NavBoard
+    pip install -r requirements.txt
+    flask --app flaskr init-db
+    flask --app flaskr run --debug
+    ```
 
-Install Flaskr:
+访问 [http://localhost:5000](http://localhost:5000) 使用 NavBoard
 
-```bash
-pip install flask
-```
+## 生产环境（Docker）
 
-## Run in debug
-
-```bash
-flask --app flaskr init-db
-flask --app flaskr run --debug
-```
-
-Open http://127.0.0.1:5000 in a browser.
-
-## Production environment (Docker)
-
-Build the image:
+构建镜像：
 
 ```bash
-docker build -t python-web .
+docker build -t NavBoard .
 ```
 
-Initialize the database:
+初始化数据库：
 
 ```bash
-docker run -p [port]:8080 -it --restart unless-stopped --name python-web python-web
+docker run -p [port]:8080 -it --restart unless-stopped --name NavBoard NavBoard
 ```
 
-After db initialization, ctrl+c to stop the container
+初始化后可用 ctrl+c 停止容器。
 
-Normally, you can run the container with:
+正常运行容器：
 
 ```bash
-docker start python-web
+docker start NavBoard
 ```

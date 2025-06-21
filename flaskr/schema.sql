@@ -1,9 +1,9 @@
--- Initialize the database.
--- Drop any existing data and create empty tables.
+-- 初始化数据库
+-- 删除已有数据并创建空表
 
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS gmap;
-DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS nav_entry;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,7 +17,7 @@ CREATE TABLE gmap (
   v TEXT NOT NULL
 );
 
-CREATE TABLE post (
+CREATE TABLE nav_entry (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author_id INTEGER NOT NULL,
   title TEXT NOT NULL,

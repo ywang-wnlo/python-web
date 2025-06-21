@@ -1,13 +1,9 @@
 [project]
-name = "flaskr"
+name = "navboard"
 version = "1.0.0"
-description = "The basic blog app built in the Flask tutorial."
+description = "NavBoard - 内外网服务导航管理平台。"
 readme = "README.md"
-license = {text = "BSD-3-Clause"}
-maintainers = [{name = "Pallets", email = "contact@palletsprojects.com"}]
+maintainers = [{name = "ywang_wnlo", email = "ywang_wnlo@qq.com"}]
 dependencies = [
     "flask",
 ]
-
-[project.urls]
-Documentation = "https://flask.palletsprojects.com/tutorial/"

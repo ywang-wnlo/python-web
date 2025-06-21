@@ -39,31 +39,31 @@
     <div class="container is-max-tablet">
       <div class="is-clearfix">
         <h1 class="title" style="float: left;">导航</h1>
-        <a class="button is-primary" href="{{ url_for('blog.create') }}" style="float: right;">添加</a>
+        <a class="button is-primary" href="{{ url_for('navboard.create') }}" style="float: right;">添加</a>
       </div>
       <div>
-        {% for post in posts %}
+        {% for nav_entry in nav_entrys %}
         <article class="message">
           <div class="message-header">
-            <p>{{ post['title'] }}</p>
-            {% if g.user and g.user['id'] == post['author_id'] %}
-            <a class="button" href="{{ url_for('blog.update', id=post['id']) }}">修改</a>
+            <p>{{ nav_entry['title'] }}</p>
+            {% if g.user and g.user['id'] == nav_entry['author_id'] %}
+            <a class="button" href="{{ url_for('navboard.update', id=nav_entry['id']) }}">修改</a>
             {% endif %}
           </div>
           <div class="message-body">
             <p>域名访问：
-              <a href="{{ post['url'] }}" target="_blank" rel="noreferrer">{{ post['url'] }}</a>
+              <a href="{{ nav_entry['url'] }}" target="_blank" rel="noreferrer">{{ nav_entry['url'] }}</a>
             </p>
-            {% if g.wan_ip and post['port'] %}
+            {% if g.wan_ip and nav_entry['port'] %}
             <p>IP 直连：
-              <a href="http://{{ g.wan_ip }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{
-                post['port'] }}</a>
+              <a href="http://{{ g.wan_ip }}:{{ nav_entry['port'] }}" target="_blank" rel="noreferrer">http://{{ g.wan_ip }}:{{
+                nav_entry['port'] }}</a>
             </p>
             {% endif %}
-            {% if post['local_ip'] and post['port'] %}
+            {% if nav_entry['local_ip'] and nav_entry['port'] %}
             <p>内网直连：
-              <a href="http://{{ post['local_ip'] }}:{{ post['port'] }}" target="_blank" rel="noreferrer">http://{{
-                post['local_ip'] }}:{{ post['port'] }}</a>
+              <a href="http://{{ nav_entry['local_ip'] }}:{{ nav_entry['port'] }}" target="_blank" rel="noreferrer">http://{{
+                nav_entry['local_ip'] }}:{{ nav_entry['port'] }}</a>
             </p>
             {% endif %}
           </div>

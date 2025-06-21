@@ -33,8 +33,8 @@
   <section class="section">
     <div class="container is-max-tablet">
       <div class="is-clearfix">
-        <h1 class="title" style="float: left;">修改 "{{ post['title'] }}"</h1>
-        <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post" style="float: right;">
+        <h1 class="title" style="float: left;">修改 "{{ nav_entry['title'] }}"</h1>
+        <form action="{{ url_for('navboard.delete', id=nav_entry['id']) }}" method="post" style="float: right;">
           <input class="button is-danger" type="submit" value="删除" onclick="return confirm('确认删除?');">
         </form>
       </div>
@@ -42,19 +42,19 @@
         <form class="box" method="post">
           <div class="field">
             <label class="label">标题</label>
-            <input class="input" type="text" name="title" id="title" value="{{ request.form['title'] or post['title'] }}" required>
+            <input class="input" type="text" name="title" id="title" value="{{ request.form['title'] or nav_entry['title'] }}" required>
           </div>
           <div class="field">
             <label class="label">链接</label>
-            <input class="input" type="text" name="url" id="url" value="{{ request.form['url'] or post['url'] }}" required />
+            <input class="input" type="text" name="url" id="url" value="{{ request.form['url'] or nav_entry['url'] }}" required />
           </div>
           <div class="field">
             <label class="label">端口</label>
-            <input class="input" type="text" name="port" id="port" value="{{ request.form['port'] or post['port'] }}">
+            <input class="input" type="text" name="port" id="port" value="{{ request.form['port'] or nav_entry['port'] }}">
           </div>
           <div class="field">
             <label class="label">内网 ip</label>
-            <input class="input" type="text" name="local_ip" id="local_ip" value="{{ request.form['local_ip'] or post['local_ip'] }}">
+            <input class="input" type="text" name="local_ip" id="local_ip" value="{{ request.form['local_ip'] or nav_entry['local_ip'] }}">
           </div>
           {% for message in get_flashed_messages() %}
           <div class="notification is-danger">
