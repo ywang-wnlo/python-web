@@ -70,15 +70,11 @@ def index():
     return render_template("navboard/index.html", nav_entrys=nav_entrys)
 
 
-def get_nav_entry(id, check_author=True):
-    """根据 id 获取导航条目及其作者
-
-    检查条目是否存在，并可选校验当前用户是否为作者
+def get_nav_entry(id):
+    """根据 id 获取导航条目
     :param id: 要获取的 nav_entry 的 id
-    :param check_author: 是否校验作者
-    :return: 带作者信息的 nav_entry
+    :return: nav_entry
     :raise 404: 条目不存在
-    :raise 403: 当前用户不是作者
     """
     nav_entry = (
         get_db()
@@ -93,9 +89,6 @@ def get_nav_entry(id, check_author=True):
     if nav_entry is None:
         abort(404, f"导航条目 id {id} 不存在。")
 
-    if check_author and nav_entry["author_id"] != g.user["id"]:
-        abort(403)
-
     return nav_entry
 
 
@@ -107,7 +100,7 @@ def valid_url(url) -> bool:
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
-    """为当前用户创建新的导航条目"""
+    """创建新的导航条目"""
     if request.method == "POST":
         title = request.form["title"]
         protocol = request.form["protocol"]
@@ -138,7 +131,7 @@ def create():
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
-    """仅允许作者本人修改导航条目"""
+    """修改导航条目"""
     nav_entry = get_nav_entry(id)
 
     if request.method == "POST":
@@ -172,7 +165,7 @@ def update(id):
 @bp.route("/<int:id>/delete", methods=("POST",))
 @login_required
 def delete(id):
-    """删除导航条目，确保条目存在且当前用户为作者"""
+    """删除导航条目"""
     get_nav_entry(id)
     db = get_db()
     db.execute("DELETE FROM nav_entry WHERE id = ?", (id,))
