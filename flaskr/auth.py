@@ -19,14 +19,14 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 def now():
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
+
 def login_required(view):
-    """View decorator that redirects anonymous users to the login page."""
+    """视图装饰器：未登录用户会被重定向到登录页面。"""
 
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for("auth.login"))
-
         return view(**kwargs)
 
     return wrapped_view
@@ -34,8 +34,7 @@ def login_required(view):
 
 @bp.before_app_request
 def load_logged_in_user():
-    """If a user id is stored in the session, load the user object from
-    the database into ``g.user``."""
+    """如果 session 中存在用户 id，则从数据库加载用户信息到 g.user。"""
     user_id = session.get("user_id")
 
     if user_id is None:
@@ -48,7 +47,7 @@ def load_logged_in_user():
 
 @bp.route("/login", methods=("GET", "POST"))
 def login():
-    """Log in a registered user by adding the user id to the session."""
+    """登录已注册用户，将用户 id 存入 session。"""
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -64,21 +63,24 @@ def login():
             error = "错误的用户名或密码"
 
         if error is None:
-            # store the user id in a new session and return to the index
+            # 登录成功，清空 session 并存储用户 id，跳转到首页
             session.clear()
             session["user_id"] = user["id"]
-            print("%s - %s login success with user[%s]" % (now(), request.remote_addr, username))
+            print("%s - %s login success with user[%s]" % (
+                now(), request.remote_addr, username))
             return redirect(url_for("index"))
 
         flash(error)
-        print("%s - %s try to login failed, with user[%s] password[%s]" % (now(), request.remote_addr, username, password))
+        print("%s - %s try to login failed, with user[%s] password[%s]" % (
+            now(), request.remote_addr, username, password))
 
     return render_template("auth/login.html")
 
 
 @bp.route("/logout")
 def logout():
-    """Clear the current session, including the stored user id."""
+    """注销当前用户，清除 session 并返回首页。"""
     session.clear()
-    print("%s - %s logout with user[%s]" % (now(), request.remote_addr, g.user["username"]))
+    print("%s - %s logout with user[%s]" %
+          (now(), request.remote_addr, g.user["username"]))
     return redirect(url_for("index"))

@@ -17,7 +17,7 @@ bp = Blueprint("navboard", __name__)
 
 
 def set_value_to_gmap(k, v):
-    # set value to sqlite
+    # 将键值对写入 gmap（sqlite）表，用于缓存全局信息
     db = get_db()
     db.execute(
         "REPLACE INTO gmap (k, v) VALUES (?, ?)",
@@ -25,8 +25,9 @@ def set_value_to_gmap(k, v):
     )
     db.commit()
 
+
 def get_value_from_gmap(k) -> str:
-    # get value from sqlite
+    # 从 gmap（sqlite）表获取指定键的值
     db = get_db()
     ret = db.execute(
         "SELECT v FROM gmap WHERE k = ?",
@@ -34,30 +35,32 @@ def get_value_from_gmap(k) -> str:
     ).fetchone()
     return ret["v"] if ret else None
 
+
 def get_wan_ip() -> str:
-    # try get ip from sqlite
+    # 获取外网 IP，优先用缓存，过期则重新获取
     wan_ip = get_value_from_gmap("wan_ip")
     last = get_value_from_gmap("last")
     if last:
         last = float(last)
     now = time.time()
-    # use the cached ip if it's not expired
+    # 缓存 60 秒内直接返回
     if wan_ip and last and (now - last < 60):
         return wan_ip
 
     wan_ip = os.popen("curl -s 4.ipw.cn").read().strip()
     if wan_ip:
-        # update the record in sqlite
+        # 更新缓存
         set_value_to_gmap("wan_ip", wan_ip)
         set_value_to_gmap("last", now)
         return wan_ip
     else:
         return None
 
+
 @bp.route("/")
 @login_required
 def index():
-    """Show all the nav_entrys, most recent first."""
+    """展示所有导航条目（nav_entry），按 url 排序"""
     db = get_db()
     nav_entrys = db.execute(
         "SELECT id, title, url, port, local_ip, author_id"
@@ -68,16 +71,14 @@ def index():
 
 
 def get_nav_entry(id, check_author=True):
-    """Get a nav_entry and its author by id.
+    """根据 id 获取导航条目及其作者
 
-    Checks that the id exists and optionally that the current user is
-    the author.
-
-    :param id: id of nav_entry to get
-    :param check_author: require the current user to be the author
-    :return: the nav_entry with author information
-    :raise 404: if a nav_entry with the given id doesn't exist
-    :raise 403: if the current user isn't the author
+    检查条目是否存在，并可选校验当前用户是否为作者
+    :param id: 要获取的 nav_entry 的 id
+    :param check_author: 是否校验作者
+    :return: 带作者信息的 nav_entry
+    :raise 404: 条目不存在
+    :raise 403: 当前用户不是作者
     """
     nav_entry = (
         get_db()
@@ -90,21 +91,23 @@ def get_nav_entry(id, check_author=True):
     )
 
     if nav_entry is None:
-        abort(404, f"Post id {id} doesn't exist.")
+        abort(404, f"导航条目 id {id} 不存在。")
 
     if check_author and nav_entry["author_id"] != g.user["id"]:
         abort(403)
 
     return nav_entry
 
+
 def valid_url(url) -> bool:
-    """Check if the url is valid."""
+    """校验链接格式是否为 http(s):// 开头"""
     return url.startswith("http://") or url.startswith("https://")
+
 
 @bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
-    """Create a new nav_entry for the current user."""
+    """为当前用户创建新的导航条目"""
     if request.method == "POST":
         title = request.form["title"]
         protocol = request.form["protocol"]
@@ -135,7 +138,7 @@ def create():
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
-    """Update a nav_entry if the current user is the author."""
+    """仅允许作者本人修改导航条目"""
     nav_entry = get_nav_entry(id)
 
     if request.method == "POST":
@@ -169,11 +172,7 @@ def update(id):
 @bp.route("/<int:id>/delete", methods=("POST",))
 @login_required
 def delete(id):
-    """Delete a nav_entry.
-
-    Ensures that the nav_entry exists and that the logged in user is the
-    author of the nav_entry.
-    """
+    """删除导航条目，确保条目存在且当前用户为作者"""
     get_nav_entry(id)
     db = get_db()
     db.execute("DELETE FROM nav_entry WHERE id = ?", (id,))

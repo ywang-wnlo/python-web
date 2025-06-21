@@ -4,40 +4,38 @@ from flask import Flask
 
 
 def create_app():
-    """Create and configure an instance of the Flask application."""
+    """创建并配置 Flask 应用实例"""
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
-        # a default secret that should be overridden by instance config
+        # 默认密钥，建议在生产环境中通过实例配置覆盖
         SECRET_KEY="dev",
-        # store the database in the instance folder
+        # 数据库存储在 instance 文件夹
         DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
     )
 
-    # load the instance config, if it exists
+    # 如果存在实例配置文件（config.py），则加载
     app.config.from_pyfile("config.py", silent=True)
 
-    # ensure the instance folder exists
+    # 确保 instance 文件夹存在
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
 
-    # register the database commands
+    # 注册数据库相关命令
     from . import db
-
     db.init_app(app)
 
-    # apply the blueprints to the app
+    # 注册蓝图（用户认证、导航管理）
     from . import auth
     from . import navboard
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(navboard.bp)
 
-    # make url_for('index') == url_for('navboard.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the navboard blueprint a url_prefix, but for
-    # the tutorial the navboard will be the main index
+    # 让 url_for('index') 等价于 url_for('navboard.index')
+    # 本项目直接将 navboard 作为主页面
     app.add_url_rule("/", endpoint="index")
 
     return app
