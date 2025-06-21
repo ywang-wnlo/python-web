@@ -10,6 +10,8 @@ if [ ! -f /app/.init_db ]; then
         exit 1
     fi
     touch /app/.init_db
+    SECRET_KEY=$(python -c 'import secrets; print(secrets.token_hex())')
+    echo "SECRET_KEY = '$SECRET_KEY'" | tee /app/instance/config.py
 fi
 
 waitress-serve --call 'flaskr:create_app'
