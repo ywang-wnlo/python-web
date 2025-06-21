@@ -9,27 +9,7 @@
 </head>
 
 <body>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-menu">
-      <div class="navbar-brand">
-        <a class="navbar-item" href="{{ url_for('index') }}">
-          <img src="{{ url_for('static', filename='favicon.ico') }}">
-        </a>
-      </div>
-      <div class="navbar-start">
-        <a class="navbar-item" href="{{ url_for('index') }}">导航</a>
-      </div>
-      <div class="navbar-end">
-        <div class="navbar-item">
-          {% if g.user %}
-          <span>{{ g.user['url'] }}</span>
-          <a class="button is-danger" href="{{ url_for('auth.logout') }}">退出</a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </nav>
-
+  {% include 'navbar.html' %}
   <section class="section">
     <div class="container is-max-tablet">
       <h1 class="title">添加</h1>
