@@ -30,9 +30,11 @@ def create_app():
     # 注册蓝图（用户认证、导航管理）
     from . import auth
     from . import navboard
+    from . import webtools
 
     app.register_blueprint(auth.bp)
     app.register_blueprint(navboard.bp)
+    app.register_blueprint(webtools.bp)
 
     # 让 url_for('index') 等价于 url_for('navboard.index')
     # 本项目直接将 navboard 作为主页面

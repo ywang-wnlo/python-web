@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quick IINA</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+</head>
+
+<body>
+  {% include 'navbar.html' %}
+  <section class="section">
+    <div class="container is-max-tablet">
+      <h1 class="title">Quick IINA</h1>
+      <form class="box" method="post">
+        <div class="field">
+          {% if iina_output %}
+          <label class="label">实际 URL</label>
+          <textarea class="textarea" readonly>{{ iina_output }}</textarea>
+          {% else %}
+          <label class="label">URL</label>
+          <textarea class="textarea" name="iina_input" required></textarea>
+          {% endif %}
+        </div>
+        <div class="field is-grouped is-grouped-right">
+          <p class="control">
+            {% if iina_output %}
+            <button class="button is-success" type="button" onclick="copyToClipboard('{{ iina_output }}')">复制</button>
+            <button class="button is-link" type="button"
+              onclick="window.location.href='iina://weblink?url={{ iina_output }}'">快速打开</button>
+            {% else %}
+            <button class="button is-primary" type="submit">提交</button>
+            {% endif %}
+          </p>
+        </div>
+      </form>
+    </div>
+  </section>
+</body>
+<script>
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function () {
+      alert('已复制到剪贴板: ' + text);
+    }, function (err) {
+      console.error('复制失败: ', err);
+    });
+  }
+</script>
+
+</html>
