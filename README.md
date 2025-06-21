@@ -29,13 +29,13 @@ NavBoard 是一个简洁高效的内外网服务导航管理平台。支持用�
 构建镜像：
 
 ```bash
-docker build -t NavBoard .
+docker build -t navboard .
 ```
 
 初始化数据库：
 
 ```bash
-docker run -p [port]:8080 -it --restart unless-stopped --name NavBoard NavBoard
+docker run -p [port]:8080 -it --restart unless-stopped --name navboard navboard
 ```
 
 初始化后可用 ctrl+c 停止容器。
@@ -43,5 +43,5 @@ docker run -p [port]:8080 -it --restart unless-stopped --name NavBoard NavBoard
 正常运行容器：
 
 ```bash
-docker start NavBoard
+docker start navboard
 ```
