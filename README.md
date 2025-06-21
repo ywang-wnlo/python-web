@@ -17,7 +17,7 @@ NavBoard 是一个简洁高效的内外网服务导航管理平台。支持用�
     ```bash
     git clone <your-repo-url>
     cd NavBoard
-    pip install -r requirements.txt
+    pip install flask
     flask --app flaskr init-db
     flask --app flaskr run --debug
     ```
